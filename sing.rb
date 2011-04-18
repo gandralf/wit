@@ -16,15 +16,11 @@ __END__
 @@ layout
 %html
   = yield
-  %div
-    Command: 
-    %pre #{@song}
-  %h2 Output
   %pre #{@output}
   Done.
 
 @@ success
-%h1 Aplause!
+%img{:src => "/img/fuckyea.png"}
 
 @@ fail
-%h1 Buuuuu!
+%img{:src => "/img/fffuuu.png"}
