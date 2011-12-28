@@ -2,5 +2,5 @@ log = File.new('log/sinatra.log', 'a')
 $stdout.reopen(log)
 $stderr.reopen(log)
 
-require 'config.ru'
+require 'sing.rb'
 run Sinatra::Application
