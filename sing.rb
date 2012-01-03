@@ -16,25 +16,37 @@ get_or_post '/' do
 end
 
 get_or_post '/:song' do |song|
-  @song = song
   if song && song.match("^[\\w_\\-]+$")
-    @output = `$HOME/.wit/#{song} &> log/#{song}.log && cat log/#{song}.log`
-    haml $?.success? ? :success : :fail
+    `$HOME/.wit/#{song} &> #{log_file_name(song)}`
+    success = $?.success?
+    @output = log_content(song)
+    haml success ? :success : :fail
   else
     @output = "Invalid integration script: #{song}"
     haml :fail
   end
 end
 
-get_or_post '/:song/log' do |song|
-  @song = song
-  @output = ""
-  file = File.new("log/#{song}.log", "r")
-  while (line = file.gets)
-    @output += "#{line}"
+def log_file_name(song)
+    File.expand_path(File.dirname(__FILE__) + "/log/#{song}.log")
+end
+
+def log_content(song)
+  result = nil
+  file = File.new(log_file_name(song), "r")
+  if (file)
+    result = ""
+    while (line = file.gets)
+      result += "#{line}"
+    end
+    file.close
   end
-  file.close
-  haml file ? :success : :fail
+  result
+end
+
+get_or_post '/:song/log' do |song|
+  @output = log_content(song) || "Can' load #{song}'s log"
+  haml @output ? :success : :fail
 end
 
 __END__

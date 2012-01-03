@@ -1,0 +1,3 @@
+#!/bin/sh
+echo "Hello, mothafucka"
+ls _not_found_file
