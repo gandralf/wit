@@ -20,27 +20,32 @@ end
 
 get_or_post '/:song' do |song|
   begin
-    stage = Stage.new(song)
-    public_reaction = stage.sing
-    @output = stage.lyrics
-  rescue
+    stage = prepare_stage
+    singer = stage.play(song)
+    public_reaction = singer.public_reaction
+    @output = singer.lyrics
+  rescue => e
     public_reaction = :fail
-    @output = "Can' sing this song: #{song}"
+    @output = "Can' sing this song: #{song}\n#{e.message}\n#{e.backtrace}"
   end
   haml public_reaction
 end
 
 get_or_post '/:song/log' do |song|
   begin
-    stage = Stage.new(song)
-    @output = stage.lyrics
+    stage = prepare_stage
+    @output = stage.listen(song)
     public_reaction = :success
-  rescue
+  rescue => e
     public_reaction = :fail
-    @output = "Can't load #{song}'s lyrics"
+    @output = "Can't load #{song}'s lyrics\n#{e.message}\n#{e.backtrace}"
   end
 
   haml public_reaction
+end
+
+def prepare_stage
+  Stage.new(File.expand_path("~/.wit/"), settings.root + "/log/")
 end
 
 __END__

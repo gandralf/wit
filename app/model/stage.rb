@@ -1,31 +1,26 @@
+require File.expand_path(File.dirname(__FILE__) + '/singer')
+
 class Stage
-  def initialize(song)
-    if !song || !song.match("^[\\w_\\-]+$")
-      raise "Can't sing #{song}"
-    end
-    @song = song
+  def initialize(songs, logs)
+    @songs_path = songs
+    @logs_path = logs
   end
 
-  def sing
-    `$HOME/.wit/#{@song} &> #{log_file_name}`
-    $?.success?
+  def play(song)
+    singer = Singer.new(self, song)
+    singer.sing
+    singer
   end
 
-  def lyrics
-    result = nil
-    file = File.new(log_file_name, "r")
-    if (file)
-      result = ""
-      while (line = file.gets)
-        result += "#{line}"
-      end
-      file.close
-    end
-    result
+  def listen(song)
+    Singer.new(self, song).lyrics
   end
 
-  private
-  def log_file_name()
-    File.expand_path(File.dirname(__FILE__) + "/../../log/#{@song}.log")
+  def song_file(song)
+    @songs_path + "/" + song
+  end
+
+  def log_file(song)
+    @logs_path + "/" + song + ".log"
   end
 end
