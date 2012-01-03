@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../sing')
+require File.expand_path(File.dirname(__FILE__) + '/../app/web/sing')
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 include Capybara::DSL
